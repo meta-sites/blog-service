@@ -1,0 +1,58 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <include file="databaseChangeLogStandard.xml"></include>
+
+    <changeSet author="blog" id="DEV-1">
+        <createTable tableName="like">
+            <column name="id" type="varchar(100)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="article_id" type="varchar(255)"/>
+            <column name="create_by" type="varchar(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="modified_by" type="varchar(255)" defaultValue="0"/>
+            <column name="modified_at" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="blog" id="DEV-2">
+        <createTable tableName="pdf_file">
+            <column name="id" type="varchar(100)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="file_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="file_size" type="bigint"/>
+            <column name="file_type" type="varchar(255)"/>
+            <column name="description" type="text"/>
+            <column name="price" type="bigint"/>
+            <column name="tags" type="varchar(255)"/>
+            <column name="author" type="varchar(255)"/>
+            <column name="num_sub" type="bigint"/>
+            <column name="logo" type="longtext"/>
+            <column name="is_publish" type="boolean"/>
+        </createTable>
+
+        <createTable tableName="book_subscriber">
+            <column name="subscriber_id" type="varchar(255)"/>
+            <column name="file_id" type="varchar(255)"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="subscriber_id, file_id"
+                constraintName="book_subscriber_unique"
+                tableName="book_subscriber"
+        />
+    </changeSet>
+</databaseChangeLog>

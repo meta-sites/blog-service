@@ -1,0 +1,90 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+   http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet author="blog" id="init-database">
+        <createTable tableName="article">
+            <column name="id" type="varchar(100)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)"/>
+            <column name="description" type="varchar(500)"/>
+            <column name="tags" type="text"/>
+            <column name="image_url" type="text"/>
+            <column name="contents_detail" type="longtext"/>
+            <column name="num_views" type="int" defaultValue="0"/>
+            <column name="num_shares" type="int" defaultValue="0"/>
+            <column name="url_friendly" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="type" type="varchar(50)"/>
+
+            <column name="create_by" type="varchar(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueDate="CURRENT_TIMESTAMP"/>
+            <column name="modified_by" type="varchar(255)" defaultValue="0"/>
+            <column name="modified_at" type="TIMESTAMP"/>
+        </createTable>
+        <sql>
+            CREATE FULLTEXT INDEX idx_article_title_content_fulltext ON article(title, description);
+        </sql>
+
+        <createTable tableName="user_entity">
+            <column name="id" type="varchar(255)" defaultValueComputed="(uuid())">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)"/>
+            <column name="user_name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="user_type" type="varchar(20)"/>
+            <column name="role" type="varchar(50)"/>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="varchar(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="modified_by" type="varchar(255)" defaultValue="0"/>
+            <column name="modified_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="comment">
+            <column name="id" type="varchar(255)" defaultValueComputed="(uuid())">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="article_id" type="varchar(255)"/>
+            <column name="content" type="text"/>
+            <column name="create_by" type="varchar(255)"/>
+            <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="modified_by" type="varchar(255)" defaultValue="0"/>
+            <column name="modified_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <createTable tableName="rate_tags">
+            <column name="id" type="varchar(255)" defaultValueComputed="(uuid())">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="tag_name" type="varchar(255)"/>
+            <column name="nums_of_article" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="tokens">
+            <column name="id" type="varchar(255)" defaultValueComputed="(uuid())">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="access_token" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
