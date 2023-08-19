@@ -41,6 +41,11 @@ public class RestUtil {
         HttpPost httpPost = new HttpPost(apiUrl);
 
         httpPost.setHeader("Authorization", "Bearer " + (Objects.isNull(beerToken) ? "" :  beerToken));
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        httpPost.setHeader("Access-Control-Allow-Methods", "*");
+        httpPost.setHeader("Access-Control-Allow-Origin", "*");
+        httpPost.setHeader("Access-Control-Allow-Credentials", "true");
 
         String jsonBody = UtilFunction.convertObjectToString(body);
 

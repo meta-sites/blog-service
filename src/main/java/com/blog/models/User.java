@@ -1,6 +1,7 @@
 package com.blog.models;
 
 import com.blog.enums.RoleEnum;
+import com.blog.enums.UserTypeEnum;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,9 +36,11 @@ public class User implements Serializable  {
     @Column(name = "user_name")
     private String userName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
-    private String userType;
+    private UserTypeEnum userType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private RoleEnum role;
 
@@ -46,4 +49,7 @@ public class User implements Serializable  {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "image_path")
+    private String imagePath;
 }

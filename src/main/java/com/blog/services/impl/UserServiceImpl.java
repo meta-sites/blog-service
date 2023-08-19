@@ -2,6 +2,8 @@ package com.blog.services.impl;
 
 import com.blog.dto.PdfFileDto;
 import com.blog.dto.UserDto;
+import com.blog.enums.RoleEnum;
+import com.blog.enums.UserTypeEnum;
 import com.blog.exception.*;
 import com.blog.models.Token;
 import com.blog.models.User;
@@ -14,8 +16,10 @@ import com.blog.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,8 +29,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j
@@ -39,17 +46,19 @@ public class UserServiceImpl implements UserService {
     private TokenRepository tokenRepository;
     private CacheService cacheService;
     private PdfService pdfService;
+    private PathUtil pathUtil;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService,
                            AuthenticationManager authenticationManager, TokenRepository tokenRepository,
-                           CacheService cacheService, PdfService pdfService) {
+                           CacheService cacheService, PdfService pdfService, PathUtil pathUtil) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.tokenRepository = tokenRepository;
         this.cacheService = cacheService;
         this.pdfService = pdfService;
+        this.pathUtil = pathUtil;
     }
 
     @Override
@@ -58,13 +67,8 @@ public class UserServiceImpl implements UserService {
         User user = MapperUtil.map(userDto, User.class);
         validateUserEntity(user);
         setDataForUserEntity(user);
-
-
-        org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
-                user.getUserName(),
-                user.getPassword(),
-                Arrays.asList(new SimpleGrantedAuthority(user.getRole().toString())));
         User entity = userRepository.save(user);
+        userRepository.flush();
         cacheService.setCache(new Pair<>(entity.getUserName(), UtilFunction.convertObjectToString(entity)));
         return Boolean.TRUE;
     };
@@ -73,13 +77,33 @@ public class UserServiceImpl implements UserService {
     public UserDto login(UserDto userDto) throws AuthenticationException, JsonProcessingException, UserException {
         String userName = userDto.getUserName();
         String password = userDto.getPassword();
+        UserTypeEnum userType = userDto.getUserType();
+        log.info("[login] Thêm user " + userType + " email: " + userDto.getEmail());
         return getUserInfoWithoutToken(userName, password);
     }
+
+    @Override
+    public UserDto loginSSO(UserDto userDto) throws Exception {
+        String userName = userDto.getUserName();
+        UserTypeEnum userType = userDto.getUserType();
+        if (UserTypeEnum.NORMAL.equals(userType))
+            throw new UserException(ExceptionConstants.USER_TYPE_IS_NOT_INVALID, HttpStatus.BAD_REQUEST);
+
+        Optional<User> userOptional = userRepository.findByUserName(userName);
+        if (!userOptional.isPresent()) {
+            log.info("[loginSSO] Thêm user " + userType + " email: " + userDto.getEmail());
+            insert(userDto);
+        }
+        String responseLogin = RestUtil.sendPostRest(pathUtil.getBaseUrl() + "/public/api/sign-in", StringUtils.EMPTY, userDto);
+        return MapperUtil.mapStringToObject(responseLogin, UserDto.class);
+    };
 
     @Override
     @Transactional
     public void logout(UserDto userDto) {
         String userName = userDto.getUserName();
+        UserTypeEnum userType = userDto.getUserType();
+        log.info("[logout] Thêm user " + userType + " email: " + userDto.getEmail());
         cacheService.clearCache(userName);
         tokenRepository.deleteAllByUserName(userName);
     }
@@ -172,16 +196,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private UserDto getUserInfoWithTokenValid(String userName) throws JsonProcessingException {
-        String token = cacheService.getCache(createCacheKey(userName));
-        User user = findUserByUserName(userName).get();
-        UserDto dto = MapperUtil.map(user, UserDto.class);
-        removeSensitiveInfo(dto);
-        setTokenUserDto(dto, token);
-
-        return dto;
-    };
-
     @Override
     @Transactional
     public UserDto update(UserDto userDto) throws Exception {
@@ -225,19 +239,13 @@ public class UserServiceImpl implements UserService {
         dto.setPassword(null);
     }
 
-    private PdfFileDto clearBookInfo(PdfFileDto dto) {
-        PdfFileDto pdfFileDto = new PdfFileDto();
-        pdfFileDto.setId(dto.getId());
-
-        return pdfFileDto;
-    }
-
     private void setTokenUserDto(UserDto dto, String token) {
         dto.setToken(token);
     }
 
     private void setDataForUserEntity(User user) {
         user.setPassword(PasswordUtil.encodePassword(user.getPassword()));
+        user.setRole(RoleEnum.USER);
     }
 
     public void validateUserEntity(User user) throws PasswordDecodeException, DataBaseException, JsonProcessingException {

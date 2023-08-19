@@ -1,6 +1,7 @@
 package com.blog.dto;
 
 import com.blog.enums.RoleEnum;
+import com.blog.enums.UserTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,10 +13,11 @@ public class UserDto implements Serializable {
 
     private String name;
     private String userName;
-    private String userType;
+    private UserTypeEnum userType;
     private RoleEnum role;
     private String email;
     private String password;
     private String token;
+    private String imagePath;
     private List<String> books;
 }

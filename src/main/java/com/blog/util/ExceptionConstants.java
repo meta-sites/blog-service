@@ -7,6 +7,7 @@ public class ExceptionConstants {
     public static String USER_IS_NOT_EXIST = "User không tồn tại.";
     public static String USER_IS_NOT_VALID = "User không đúng.";
     public static String USER_IS_NOT_LOGIN = "Bạn chưa đăng nhập";
+    public static String USER_TYPE_IS_NOT_INVALID = "Kiểu user không hợp lệ";
 
     public static String CAN_NOT_FIND_ARTICLE = "Không thể tìm thấy bài viết.";
     public static String SEARCH_CONDITION_IS_NOT_PROPER = "Điều kiện tìm kiếm không đúng. Vui lòng cung cấp thêm thông tin.";

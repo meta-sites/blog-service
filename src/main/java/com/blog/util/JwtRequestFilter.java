@@ -43,18 +43,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (isPublicAPI) {
             if (invalidToken) {
-                jwtToken = authorizationHeader.substring(7);
-                username = JwtTokenUtil.extractUsername(jwtToken);
-                List< SimpleGrantedAuthority > authorities = JwtTokenUtil.extractAuthorities(jwtToken).stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-                validateTokenValid(jwtToken, username, response);
+                try {
+                    jwtToken = authorizationHeader.substring(7);
+                    username = JwtTokenUtil.extractUsername(jwtToken);
+                    List< SimpleGrantedAuthority > authorities = JwtTokenUtil.extractAuthorities(jwtToken).stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+                    validateTokenValid(jwtToken, username, response);
 
-                Boolean isExistInContext = Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication());
-                if (isExistInContext) {
-                    Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                    Boolean isExistInContext = Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication());
+                    if (isExistInContext) {
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } catch (Exception ex) {}
+
             }
             filterChain.doFilter(request, response);
         } else

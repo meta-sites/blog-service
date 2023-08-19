@@ -38,7 +38,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(100)"/>
-            <column name="user_name" type="varchar(50)">
+            <column name="user_name" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="user_type" type="varchar(20)"/>
@@ -46,10 +46,10 @@
             <column name="email" type="varchar(100)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="password" type="varchar(100)">
+            <column name="password" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-
+            <column name="image_path" type="varchar(350)"/>
             <column name="create_by" type="varchar(255)"/>
             <column name="create_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
             <column name="modified_by" type="varchar(255)" defaultValue="0"/>
@@ -83,7 +83,7 @@
             <column name="user_id" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="access_token" type="varchar(255)"/>
+            <column name="access_token" type="varchar(350)"/>
         </createTable>
     </changeSet>
 

@@ -11,6 +11,8 @@ public interface UserService {
 
     UserDto login(UserDto dto) throws UserException, JsonProcessingException;
 
+    UserDto loginSSO(UserDto dto) throws Exception;
+
     UserDto update(UserDto dto) throws Exception;
 
     void logout(UserDto dto);
