@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 public class PathUtil {
     private HttpServletRequest request;
 
-    @Value("${user.logo.dir}")
-    private String userLogoDir;
+    @Value("${app.resources-path}")
+    private String resourcesPath;
 
     public PathUtil(HttpServletRequest request) {
         this.request = request;
@@ -23,7 +23,8 @@ public class PathUtil {
         return currentUrl.replace(endpointPath, "");
     }
 
-    public String getUserLogoDir() {
-        return userLogoDir;
+    public String getResourcesPath() {
+        return resourcesPath;
     }
+
 }

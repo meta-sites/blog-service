@@ -14,11 +14,13 @@ import com.blog.repositories.UserRepository;
 import com.blog.services.*;
 import com.blog.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.parsson.MapUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,12 +34,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ArticleServiceImpl implements ArticleService  {
 
     @Value("${article.cover.dir}")

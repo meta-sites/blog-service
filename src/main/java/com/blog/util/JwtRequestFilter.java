@@ -30,7 +30,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
 
-    private List<String> excludedPaths = Arrays.asList("^/public/.*");
+    private List<String> noExcludedPaths = Arrays.asList("^/private/.*");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,10 +38,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         final String requestPath = request.getRequestURI();
         String username = null;
         String jwtToken = null;
-        Boolean isPublicAPI = excludedPaths.stream().anyMatch(requestPath::matches);
+        Boolean isPrivateAPI = noExcludedPaths.stream().anyMatch(requestPath::matches);
         Boolean invalidToken = Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith("Bearer ");
 
-        if (isPublicAPI) {
+        if (!isPrivateAPI) {
             if (invalidToken) {
                 try {
                     jwtToken = authorizationHeader.substring(7);

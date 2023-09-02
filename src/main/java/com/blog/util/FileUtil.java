@@ -16,10 +16,10 @@ import java.util.UUID;
 public class FileUtil {
 
     public static void createDirectoryIfNoExist(String directoryPath) throws IOException {
-        Path path = Paths.get(directoryPath);
+        File directory = new File(directoryPath);
 
-        if (!Files.exists(path)) {
-            Files.createDirectories(path);
+        if (!directory.exists()) {
+            directory.mkdirs();
         }
     }
 

@@ -17,6 +17,7 @@ import com.blog.services.ResourceService;
 import com.blog.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -39,6 +40,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 @Service
+@Slf4j
 public class PdfServiceImpl implements PdfService {
 
     @Value("${ebook.root.dir}")
@@ -94,6 +96,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     private void savePdfBook(MultipartFile file) throws IOException {
+        log.info("Tạo folder ở " + eBookDir);
         FileUtil.createDirectoryIfNoExist(eBookDir);
         String fileName = file.getOriginalFilename();
         String filePath = eBookDir + fileName;

@@ -61,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/private/.*").authenticated()
                 .antMatchers("/private/api/article").hasAuthority("ADMIN")
                 .antMatchers("/private/api/article/upload-article-image").hasAuthority("ADMIN")
+                .anyRequest().permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

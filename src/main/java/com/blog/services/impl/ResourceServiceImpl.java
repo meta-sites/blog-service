@@ -4,8 +4,10 @@ import com.blog.exception.BookException;
 import com.blog.exception.FileException;
 import com.blog.services.ResourceService;
 import com.blog.util.ExceptionConstants;
+import com.blog.util.PathUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
