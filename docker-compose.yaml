@@ -18,3 +18,4 @@ services:
       - /home/ubuntu/article/cover/:/app/article/cover/
       - /home/ubuntu/user/logo/:/app/user/logo/
       - /home/ubuntu/blog/static/:/app/blog/static/
+      - /home/ubuntu/backup/:/app/backup/

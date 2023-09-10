@@ -43,7 +43,7 @@ import java.util.concurrent.CompletionException;
 @Slf4j
 public class PdfServiceImpl implements PdfService {
 
-    @Value("${ebook.root.dir}")
+    @Value("${ebook.pdf.dir}")
     private String eBookDir;
 
     @Value("${ebook.cover.dir}")

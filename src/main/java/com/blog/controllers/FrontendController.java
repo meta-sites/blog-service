@@ -4,21 +4,17 @@ import com.blog.exception.FileException;
 import com.blog.services.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+
 
 @RestController
 public class FrontendController {
@@ -60,6 +56,4 @@ public class FrontendController {
         headers.setContentType(MediaType.parseMediaType("text/css"));
         return new ResponseEntity<>(resourceService.accessResource(filePath), headers, HttpStatus.OK);
     }
-
-
 }

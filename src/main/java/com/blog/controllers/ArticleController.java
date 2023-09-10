@@ -1,11 +1,9 @@
 package com.blog.controllers;
 
-import com.blog.aop.anotation.IncreaseViewArticle;
 import com.blog.dto.*;
 import com.blog.exception.ArticleException;
 import com.blog.exception.BookException;
 import com.blog.exception.FileException;
-import com.blog.models.Article;
 import com.blog.services.ArticleService;
 import com.blog.services.TagService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,9 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping
 public class ArticleController {
-
-    @Autowired
-    private TagService tagService;
 
     private ArticleService articleService;
 
