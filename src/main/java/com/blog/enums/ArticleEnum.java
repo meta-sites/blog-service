@@ -4,7 +4,7 @@ public enum ArticleEnum {
     OOP("OOP"),
     JAVA("JAVA"),
     DEV_OPS("DEV_OPS"),
-    JS("JS");
+    SPRING("SPRING");
 
     private final String description;
 

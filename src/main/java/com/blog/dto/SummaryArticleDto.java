@@ -20,7 +20,7 @@ public class SummaryArticleDto implements Serializable {
     private Long numberViewDevOP;
     private Long numberCommentDevOP;
 
-    private Long numberArticleJs;
-    private Long numberViewJs;
-    private Long numberCommentJs;
+    private Long numberArticleSpring;
+    private Long numberViewSpring;
+    private Long numberCommentSpring;
 }

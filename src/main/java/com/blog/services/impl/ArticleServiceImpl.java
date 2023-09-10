@@ -188,9 +188,9 @@ public class ArticleServiceImpl implements ArticleService  {
                     dto.setNumberArticleOOP(Long.valueOf(String.valueOf(article[1])));
                     dto.setNumberViewOOP(Long.valueOf(String.valueOf(article[2])));
                     break;
-                case "JS":
-                    dto.setNumberArticleJs(Long.valueOf(String.valueOf(article[1])));
-                    dto.setNumberViewJs(Long.valueOf(String.valueOf(article[2])));
+                case "SPRING":
+                    dto.setNumberArticleSpring(Long.valueOf(String.valueOf(article[1])));
+                    dto.setNumberViewSpring(Long.valueOf(String.valueOf(article[2])));
                     break;
                 case "DEV_OPS":
                     dto.setNumberArticleDevOP(Long.valueOf(String.valueOf(article[1])));
@@ -211,8 +211,8 @@ public class ArticleServiceImpl implements ArticleService  {
                 case "OOP":
                     dto.setNumberCommentOOP(Long.valueOf(String.valueOf(comment[1])));
                     break;
-                case "JS":
-                    dto.setNumberCommentJs(Long.valueOf(String.valueOf(comment[1])));
+                case "SPRING":
+                    dto.setNumberCommentSpring(Long.valueOf(String.valueOf(comment[1])));
                     break;
                 case "DEV_OPS":
                     dto.setNumberCommentDevOP(Long.valueOf(String.valueOf(comment[1])));
