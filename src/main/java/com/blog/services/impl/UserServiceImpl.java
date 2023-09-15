@@ -19,22 +19,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Optional;
+import java.util.Objects;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByUserName(userName);
         if (!userOptional.isPresent()) {
             log.info("[loginSSO] Thêm user " + userType + " email: " + userDto.getEmail());
-            insert(userDto);
+            RestUtil.sendPostRest(pathUtil.getBaseUrl() + "/public/api/sign-up", StringUtils.EMPTY, userDto);
         }
         String responseLogin = RestUtil.sendPostRest(pathUtil.getBaseUrl() + "/public/api/sign-in", StringUtils.EMPTY, userDto);
         return MapperUtil.mapStringToObject(responseLogin, UserDto.class);
@@ -103,7 +100,7 @@ public class UserServiceImpl implements UserService {
     public void logout(UserDto userDto) {
         String userName = userDto.getUserName();
         UserTypeEnum userType = userDto.getUserType();
-        log.info("[logout] Thêm user " + userType + " email: " + userDto.getEmail());
+        log.info("[logout] Logout user " + userType + " email: " + userDto.getEmail());
         cacheService.clearCache(userName);
         tokenRepository.deleteAllByUserName(userName);
     }

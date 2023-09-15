@@ -81,11 +81,4 @@ public class ArticleController {
                 .ok()
                 .body(articleService.getArticleImageCover(id));
     }
-
-//    @PostMapping("/public/api/article/tags")
-//    public void tags() throws ArticleException {
-//        tagService.analyzeTag();
-//    }
-
-
 }
