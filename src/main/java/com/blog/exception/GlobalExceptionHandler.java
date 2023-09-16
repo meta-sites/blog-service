@@ -58,6 +58,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus).body(messageHandler(ex.getMessage(), httpStatus));
     }
 
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<String> handleMailException(MailException ex) {
+        HttpStatus httpStatus = ex.getHttpStatus();
+        return ResponseEntity.status(httpStatus).body(messageHandler(ex.getMessage(), httpStatus));
+    }
 
     private String messageHandler(String msg, HttpStatus code) {
         String errMsg = "\"Message\": \"".concat(msg).concat("\"");

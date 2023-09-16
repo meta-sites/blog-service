@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .header {
+            background-color: #52ACE2;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .footer {
+            background-color: #52ACE2;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Hủy nhận email</h1>
+    </div>
+    <div class="content">
+        <p>Bạn đã hủy nhận email <strong th:text="${email}"></strong> thành công.</p>
+        <p>Bấm vào <a id="link" th:href="${link}">ITABLE</span></a> để quay trở lại với website.</p>
+        <p id="countdown">Chuyển hướng trong: 4 giây</p>
+    </div>
+    <div class="footer">
+        <p>&nbsp;</p>
+    </div>
+</div>
+
+<script>
+    var link = document.getElementById("link").getAttribute("href");
+    var seconds = 4;
+    var countdown = setInterval(function() {
+        document.getElementById("countdown").textContent = "Chuyển hướng trong: " + seconds + " giây";
+        if (seconds === 1) {
+            clearInterval(countdown);
+            window.location.href = link;
+        }
+        seconds--;
+    }, 1000);
+</script>
+
+</body>
+</html>

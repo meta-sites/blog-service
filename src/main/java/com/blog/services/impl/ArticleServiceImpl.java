@@ -2,12 +2,18 @@ package com.blog.services.impl;
 
 import com.blog.aop.anotation.IncreaseShareArticle;
 import com.blog.aop.anotation.IncreaseViewArticle;
-import com.blog.dto.*;
+import com.blog.dto.ArticleDto;
+import com.blog.dto.ArticleSearchDto;
+import com.blog.dto.ArticleShortDto;
+import com.blog.dto.SummaryArticleDto;
+import com.blog.dto.PdfFileDto;
+import com.blog.dto.CommentDto;
 import com.blog.enums.ArticleEnum;
 import com.blog.exception.ArticleException;
 import com.blog.exception.BookException;
 import com.blog.exception.FileException;
 import com.blog.models.Article;
+import com.blog.models.EmailPreference;
 import com.blog.models.User;
 import com.blog.repositories.ArticleRepository;
 import com.blog.repositories.UserRepository;
@@ -18,23 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.eclipse.parsson.MapUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
+import org.thymeleaf.context.Context;
+import javax.mail.MessagingException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.*;
@@ -47,29 +46,33 @@ public class ArticleServiceImpl implements ArticleService  {
     @Value("${article.cover.dir}")
     private String articleCoverDir;
 
-    private UserRepository userRepository;
     private ArticleRepository articleRepository;
     private AuthenticationService authenticationService;
     private CommentService commentService;
     private LikeService likeService;
     private ResourceService resourceService;
+    private MailService mailService;
+    private EmailPreferenceService emailPreferenceService;
 
-    public ArticleServiceImpl(UserRepository userRepository, ArticleRepository articleRepository,
+    public ArticleServiceImpl(ArticleRepository articleRepository,
                               AuthenticationService authenticationService, CommentService commentService,
-                              LikeService likeService, ResourceService resourceService) {
-        this.userRepository = userRepository;
+                              LikeService likeService, ResourceService resourceService, MailService mailService,
+                              EmailPreferenceService emailPreferenceService) {
         this.articleRepository = articleRepository;
         this.authenticationService = authenticationService;
         this.commentService = commentService;
         this.likeService = likeService;
         this.resourceService = resourceService;
+        this.mailService = mailService;
+        this.emailPreferenceService = emailPreferenceService;
     }
 
     @Override
-    public ArticleDto insert(ArticleDto articleDto) throws JsonProcessingException {
+    public ArticleDto insert(ArticleDto articleDto) throws IOException {
         Article article = createArticleEntityForInsert(articleDto);
         Article entity = articleRepository.save(article);
 
+        sendMailToRecipient(entity);
         return createArticleDto(entity);
     }
 
@@ -299,5 +302,40 @@ public class ArticleServiceImpl implements ArticleService  {
         entity.setImageUrl(articleDto.getImageUrl());
 
         return entity;
+    }
+
+    private void sendMailToRecipient(Article article) throws IOException {
+        Context context = new Context();
+        context.setVariable("title", article.getTitle());
+        context.setVariable("shortDesc", article.getDescription());
+        context.setVariable("imageURL", buildImageUrl(article));
+        context.setVariable("link", buildLinkArticle(article));
+
+        List< EmailPreference > emailPreferenceList = emailPreferenceService.findEmailPreferencesByVerified();
+        emailPreferenceList.parallelStream().forEach( emailPreference -> {
+            try {
+                mailService.sendEmailWithTemplate(emailPreference.getEmail(), article.getTitle(), MailConstant.NEWS_ARTICLE_TEMPLATE, context);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                log.error("Can not send email to " + emailPreference.getEmail());
+            }
+        } );
+    }
+
+    private String buildLinkArticle(Article article) throws IOException {
+        return new StringBuilder(resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL))
+                .append(Constants.SLASH)
+                .append("blog")
+                .append(Constants.SLASH)
+                .append(article.getType().toString().toLowerCase())
+                .append(Constants.SLASH)
+                .append(article.getUrlFriendly())
+                .toString();
+    }
+
+    private String buildImageUrl(Article article) throws IOException {
+        return new StringBuilder(resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL))
+                .append("public/api/article/article-image-cover/")
+                .append(article.getImageUrl())
+                .toString();
     }
 }

@@ -34,6 +34,5 @@ public class ResourceConstants {
 
     public final static String BACKUP_FOLDER_ID= "backup.folder.id";
 
-
-
+    public final static String SERVER_DOMAIN_URL = "server.domain.url";
 }

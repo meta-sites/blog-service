@@ -27,7 +27,7 @@ public class ArticleController {
     }
 
     @PostMapping("/private/api/article")
-    public ResponseEntity< ArticleDto > insert(@RequestBody ArticleDto articleDto) throws JsonProcessingException {
+    public ResponseEntity< ArticleDto > insert(@RequestBody ArticleDto articleDto) throws IOException {
         return ResponseEntity
                 .ok()
                 .body(articleService.insert(articleDto));
@@ -41,7 +41,7 @@ public class ArticleController {
     }
 
     @PutMapping("/private/api/article/{id}/share")
-    public ResponseEntity< Boolean > share(@PathVariable String id) throws ArticleException {
+    public ResponseEntity< Boolean > share(@PathVariable String id) {
         return ResponseEntity
                 .ok()
                 .body(articleService.share(id));

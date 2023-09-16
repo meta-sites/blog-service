@@ -65,6 +65,9 @@ public class ResourceServiceImpl implements ResourceService {
     @Value("${backup.folder.id}")
     private String backupFolderId;
 
+    @Value("${server.domain.url}")
+    private String serverDomainUrl;
+
     private ResourceLoader resourceLoader;
 
     public ResourceServiceImpl(ResourceLoader resourceLoader) {
@@ -148,6 +151,10 @@ public class ResourceServiceImpl implements ResourceService {
 
             case ResourceConstants.BACKUP_FOLDER_ID:
                 source = backupFolderId;
+                break;
+
+            case ResourceConstants.SERVER_DOMAIN_URL:
+                source = serverDomainUrl;
                 break;
 
             default: source = "";

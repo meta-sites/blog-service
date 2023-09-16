@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông báo: Bài viết mới</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #500050;
+        }
+
+        a {
+            text-decoration: none;
+            color: #500050 !important;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .footer {
+            background-color: #52ACE2;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .logo{
+            display: flex;
+            width: fit-content;
+            align-items: center;
+        }
+
+        .logo .txt {
+            font-size: 315.5%;
+            font-weight: 700;
+            background: linear-gradient(180deg,rgba(240,123,34,.28) 0%,#E66F6F 48.61%,#F07B22 82.99%);
+            color: white;
+            line-height: normal;
+            height: fit-content;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <div class="txt">ITABLE</div>
+        </div>
+    </div>
+    <div class="content">
+        <a th:href="${link}"><h1 th:text="${title}"></h1></a>
+        <a th:href="${link}"><img th:src="@{|${imageURL}|}" /></a>
+        <p th:text="${shortDesc}"></p>
+    </div>
+    <div class="footer">
+        <p>&nbsp;</p>
+    </div>
+</div>
+</body>
+</html>

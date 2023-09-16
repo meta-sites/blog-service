@@ -55,4 +55,16 @@
                 tableName="book_subscriber"
         />
     </changeSet>
+
+    <changeSet author="blog" id="DEV-3">
+        <createTable tableName="email_preference">
+            <column name="id" type="varchar(100)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="verified" type="boolean" defaultValue="false"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

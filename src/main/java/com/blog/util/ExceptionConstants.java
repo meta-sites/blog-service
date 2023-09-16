@@ -17,4 +17,6 @@ public class ExceptionConstants {
     public static String BOOK_IS_NOT_EXIST = "Không tìm thấy sách.";
     public static String ALDEADY_SUB_BOOK = "Bạn đã đăng kí cuốn sách này rồi.";
     public static String NOT_SUB_BOOK = "Bạn chưa đăng kí sách";
+
+    public static String EMAIL_VERIFIED_EXPIRED = "Email Verified đã hết hạn";
 }
