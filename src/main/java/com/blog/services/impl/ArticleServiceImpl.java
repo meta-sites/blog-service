@@ -322,9 +322,12 @@ public class ArticleServiceImpl implements ArticleService  {
         List< EmailPreference > emailPreferenceList = emailPreferenceService.findEmailPreferencesByVerified();
         emailPreferenceList.parallelStream().forEach( emailPreference -> {
             try {
+                context.setVariable("unsubscribeLink", emailPreferenceService.generateUnsubscribe(emailPreference.getEmail()));
                 mailService.sendEmailWithTemplate(emailPreference.getEmail(), article.getTitle(), MailConstant.NEWS_ARTICLE_TEMPLATE, context);
             } catch (MessagingException | UnsupportedEncodingException e) {
                 log.error("Can not send email to " + emailPreference.getEmail());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } );
     }

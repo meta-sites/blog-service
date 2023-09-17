@@ -16,36 +16,58 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
-        .header {
-            background-color: #52ACE2;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-        }
         .content {
             padding: 20px;
         }
+
+        /*  ================  header  ================  */
+        .header {
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .logo{
+            display: flex;
+            width: fit-content;
+            align-items: center;
+        }
+
+        .logo .txt {
+            font-size: 315.5%;
+            font-weight: 700;
+            background: linear-gradient(180deg,rgba(240,123,34,.28) 0%,#E66F6F 48.61%,#F07B22 82.99%);
+            color: white;
+            line-height: normal;
+            height: fit-content;
+        }
+        /*  ================  header  ================  */
+
+        /*  ================  footer  ================  */
         .footer {
-            background-color: #52ACE2;
+            background-color: #007bff;
             color: #fff;
             text-align: center;
             padding: 10px;
         }
+
+        .footer .txt-unsub {
+            display: flex;
+            align-items: end;
+            color: white;
+            font-size: 11px;
+        }
+        /*  ================  footer  ================  */
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1>Hủy nhận email</h1>
-    </div>
+    <div th:replace="common-template::header"></div>
     <div class="content">
         <p>Bạn đã hủy nhận email <strong th:text="${email}"></strong> thành công.</p>
         <p>Bấm vào <a id="link" th:href="${link}">ITABLE</span></a> để quay trở lại với website.</p>
         <p id="countdown">Chuyển hướng trong: 4 giây</p>
     </div>
-    <div class="footer">
-        <p>&nbsp;</p>
-    </div>
+    <div th:replace="common-template::footer-empty"></div>
 </div>
 
 <script>

@@ -82,7 +82,7 @@ public class FrontendController {
                 .body(resourceService.accessResource(filePath));
     }
 
-    @GetMapping(value = {"/*.*.ttf"})
+    @GetMapping(value = {"/*.*.ttf", "*.ico"})
     public ResponseEntity<byte[]> getTTF(HttpServletRequest request) throws IOException, FileException {
         String requestPath = request.getRequestURI();
         String[] pathSegments = requestPath.split("/");

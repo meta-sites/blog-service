@@ -12,4 +12,6 @@ public interface EmailPreferenceService {
     List<EmailPreference> findEmailPreferencesByVerified();
 
     void sendMailVerified(EmailPreference emailPreference);
+
+    String generateUnsubscribe(String email) throws Exception;
 }

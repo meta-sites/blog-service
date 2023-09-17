@@ -51,20 +51,21 @@ public class EmailPreferenceServiceImpl implements EmailPreferenceService {
         context.setVariable("link", resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL));
 
         if (!IsExpireTime(expired)) {
-            return mailService.getTemplate("verified-receive-mail-expired-template", context);
+            return mailService.getTemplate(MailConstant.VERIFIED_RECEIVE_MAIL_EXPIRED_TEMPLATE, context);
         };
         emailPreferenceRepository.verified(email);
-        return mailService.getTemplate("verified-receive-mail-success-template", context);
+        return mailService.getTemplate(MailConstant.VERIFIED_RECEIVE_MAIL_SUCCESS_TEMPLATE, context);
     }
 
     @Override
+    @Transactional
     public String cancelSubscribeEmailPreferences(String email) throws Exception {
         String decryptEmail = AESCrypt.decrypt(email);
         Context context = new Context();
         context.setVariable("email", decryptEmail);
         context.setVariable("link", resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL));
         emailPreferenceRepository.cancel(decryptEmail);
-        return mailService.getTemplate("verified-receive-mail-success-template", context);
+        return mailService.getTemplate(MailConstant.CANCEL_RECEIVE_MAIL_TEMPLATE, context);
     }
 
 
@@ -89,7 +90,12 @@ public class EmailPreferenceServiceImpl implements EmailPreferenceService {
         Context context = new Context();
         context.setVariable("email", email);
         context.setVariable("link", generateVerifiedLink(email));
+        setContextFooter(context, email);
         mailService.sendEmailWithTemplate(email,MailConstant.VERIFIED_RECEIVE_MAIL_SUBJECT, MailConstant.VERIFIED_RECEIVE_MAIL_TEMPLATE, context);
+    }
+
+    private void setContextFooter(Context context, String email) throws Exception {
+        context.setVariable("unsubscribeLink", generateUnsubscribe(email));
     }
 
     private String generateVerifiedLink(String email) throws Exception {
@@ -101,6 +107,23 @@ public class EmailPreferenceServiceImpl implements EmailPreferenceService {
                 .append(buildDataVerified(email))
                 .toString();
 
+    }
+
+    @Override
+    public String generateUnsubscribe(String email) throws Exception {
+        return new StringBuilder(resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL))
+                .append(Constants.SLASH)
+                .append("public/api/cancel-subscribe-email-preferences")
+                .append(Constants.QUESTION_MARK)
+                .append("data=")
+                .append(buildDataEmailCancel(email))
+                .toString();
+    }
+
+    private String buildDataEmailCancel(String email) throws Exception {
+        String data = new StringBuilder(email)
+                .toString();
+        return URLEncoder.encode(AESCrypt.encrypt(data), StandardCharsets.UTF_8.toString());
     }
 
     private String buildDataVerified(String email) throws Exception {

@@ -11,38 +11,59 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f4f4f4;
-        }
-        .header {
-            background-color: #007bff;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
         }
         .content {
             padding: 20px;
         }
+
+        /*  ================  footer  ================  */
         .footer {
             background-color: #007bff;
             color: #fff;
             text-align: center;
             padding: 10px;
         }
+
+        .footer .txt-unsub {
+            display: flex;
+            align-items: end;
+            color: white;
+            font-size: 11px;
+        }
+        /*  ================  footer  ================  */
+
+        /*  ================  header  ================  */
+        .header {
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .logo{
+            display: flex;
+            width: fit-content;
+            align-items: center;
+        }
+
+        .logo .txt {
+            font-size: 315.5%;
+            font-weight: 700;
+            background: linear-gradient(180deg,rgba(240,123,34,.28) 0%,#E66F6F 48.61%,#F07B22 82.99%);
+            color: white;
+            line-height: normal;
+            height: fit-content;
+        }
+        /*  ================  header  ================  */
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1>Xin chào!</h1>
-    </div>
+    <div th:replace="common-template::header"></div>
     <div class="content">
         <p>Cảm ơn bạn đã đăng ký nhận bài viết mới nhất từ chúng tôi. Bạn sẽ nhận được các cập nhật mới nhất qua email <strong th:text="${email}"></strong>.</p>
         <p>Nhưng trước hết, bạn hãy xác nhận việc đăng kí bằng cách bấm vào <a th:href="${link}">đường link</a> để xác nhận.</p>
         <p>Xin chào mừng bạn đến với cộng đồng của chúng tôi!</p>
     </div>
-    <div class="footer">
-        <p>&nbsp;</p>
-    </div>
+    <div th:replace="common-template::footer-empty"></div>
 </div>
 </body>
 </html>

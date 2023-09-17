@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /*  ================  header  ================  */
+        .header {
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .logo{
+            display: flex;
+            width: fit-content;
+            align-items: center;
+        }
+
+        .logo .txt {
+            font-size: 315.5%;
+            font-weight: 700;
+            background: linear-gradient(180deg,rgba(240,123,34,.28) 0%,#E66F6F 48.61%,#F07B22 82.99%);
+            color: white;
+            line-height: normal;
+            height: fit-content;
+        }
+        /*  ================  header  ================  */
+    </style>
+</head>
+<body>
+
+<div th:fragment="header">
+    <div class="header">
+        <div class="logo">
+            <div class="txt">ITABLE</div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="footer">
+    <div class="footer">
+        <div class="txt-unsub">Bạn đã subscribed iTable, bấm &nbsp; <a th:href="${unsubscribeLink}"> unsubscribe </span></a> &nbsp; để hủy đăng kí </div>
+    </div>
+</div>
+
+<div th:fragment="footer-empty">
+    <div class="footer">
+        <div>&nbsp;</div>
+    </div>
+</div>
+
+
+</body>
+</html>

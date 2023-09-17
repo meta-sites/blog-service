@@ -25,36 +25,40 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        .header {
-            padding: 20px;
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-
         .content {
             padding: 20px;
         }
-
-        .footer {
-            background-color: #52ACE2;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-
         h1 {
             font-size: 24px;
             margin-bottom: 10px;
         }
-
         img {
             max-width: 100%;
             height: auto;
         }
 
+        /*  ================  footer  ================  */
+        .footer {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .footer .txt-unsub {
+            display: flex;
+            align-items: end;
+            color: white;
+            font-size: 11px;
+        }
+        /*  ================  footer  ================  */
+
+        /*  ================  header  ================  */
+        .header {
+            padding: 20px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
         .logo{
             display: flex;
             width: fit-content;
@@ -69,23 +73,19 @@
             line-height: normal;
             height: fit-content;
         }
+        /*  ================  header  ================  */
+
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">
-            <div class="txt">ITABLE</div>
-        </div>
-    </div>
+    <div th:replace="common-template::header"></div>
     <div class="content">
         <a th:href="${link}"><h1 th:text="${title}"></h1></a>
         <a th:href="${link}"><img th:src="@{|${imageURL}|}" /></a>
         <p th:text="${shortDesc}"></p>
     </div>
-    <div class="footer">
-        <p>&nbsp;</p>
-    </div>
+    <div th:replace="common-template::footer"></div>
 </div>
 </body>
 </html>
