@@ -1,17 +1,10 @@
 version: "3.9"
-networks:
-  meta_site_network:
-    driver: bridge
-
-services: 
+services:
   blog-service:
-    build: 
+    build:
       context: .
       dockerfile: .Dockerfile
-    mem_limit: 500m
     container_name: blog-service
-    networks:
-      - meta_site_network
     volumes:
       - /home/ubuntu/book/pdf:/app/book/pdf
       - /home/ubuntu/book/cover/:/app/book/cover/
@@ -19,3 +12,5 @@ services:
       - /home/ubuntu/user/logo/:/app/user/logo/
       - /home/ubuntu/blog/static/:/app/blog/static/
       - /home/ubuntu/backup/:/app/backup/
+    ports:
+      - "443:80"

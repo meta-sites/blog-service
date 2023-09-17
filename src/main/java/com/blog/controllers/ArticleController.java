@@ -1,11 +1,14 @@
 package com.blog.controllers;
 
-import com.blog.dto.*;
+import com.blog.dto.ArticleDto;
+import com.blog.dto.ArticleShortDto;
+import com.blog.dto.ArticleSearchDto;
+import com.blog.dto.SummaryArticleDto;
+import com.blog.dto.PdfFileDto;
 import com.blog.exception.ArticleException;
 import com.blog.exception.BookException;
 import com.blog.exception.FileException;
 import com.blog.services.ArticleService;
-import com.blog.services.TagService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -73,6 +76,13 @@ public class ArticleController {
         return ResponseEntity
                 .ok()
                 .body(articleService.uploadArticleImage(file));
+    }
+
+    @DeleteMapping("/private/api/article/delete-article-image/{fileName}")
+    public ResponseEntity<Boolean> deleteArticleImage(@PathVariable String fileName) throws IOException {
+        return ResponseEntity
+                .ok()
+                .body(articleService.deleteArticleImage(fileName));
     }
 
     @GetMapping("/public/api/article/article-image-cover/{id}")

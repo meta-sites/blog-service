@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class EmailPreferencesController {
@@ -24,9 +26,11 @@ public class EmailPreferencesController {
     }
 
     @PostMapping("/public/api/subscribe-email-preferences")
-    public ResponseEntity subscribeEmailPreferences(@RequestBody EmailPreference emailPreference) throws UserException, JsonProcessingException {
+    public ResponseEntity<Map> subscribeEmailPreferences(@RequestBody EmailPreference emailPreference) throws UserException, JsonProcessingException {
         emailPreferenceService.sendMailVerified(emailPreference);
-        return ResponseEntity.ok("Đăng ký email preferences thành công");
+        return ResponseEntity
+                .ok()
+                .body(new HashMap<>());
     }
 
     @GetMapping("/public/api/subscribe-email-preferences")

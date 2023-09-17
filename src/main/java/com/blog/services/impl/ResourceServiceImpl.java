@@ -89,8 +89,13 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public void removeResource(String path) {
+    public void removeResource(String path) throws IOException {
+        String resourcePath = new File(path).getAbsolutePath();
+        Resource resource = resourceLoader.getResource("file:" + resourcePath);
 
+        if (resource.exists()) {
+            resource.getFile().delete();
+        }
     };
 
     public String getResourcePath(String path) throws IOException {

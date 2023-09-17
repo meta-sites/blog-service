@@ -29,5 +29,7 @@ public interface ArticleService {
 
     PdfFileDto uploadArticleImage(MultipartFile file) throws IOException;
 
+    Boolean deleteArticleImage(String fileName) throws IOException;
+
     byte[] getArticleImageCover(String id) throws IOException, FileException, BookException;
 }

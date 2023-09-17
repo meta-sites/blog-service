@@ -176,6 +176,14 @@ public class ArticleServiceImpl implements ArticleService  {
     };
 
     @Override
+    public Boolean deleteArticleImage(String fileName) throws IOException {
+        String filePath = articleCoverDir + fileName;
+        resourceService.removeResource(filePath);
+        log.info("Xóa ảnh đại diện của bài viết: " + fileName);
+        return Boolean.TRUE;
+    }
+
+    @Override
     public byte[] getArticleImageCover(String id) throws IOException, FileException, BookException {
         return resourceService.accessResource(articleCoverDir + id);
     };
