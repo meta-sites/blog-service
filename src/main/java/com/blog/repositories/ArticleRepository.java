@@ -31,6 +31,11 @@ public interface ArticleRepository extends JpaRepository< Article, String> {
     List<ArticleShortDto> getOrderByTime(Pageable pageable);
 
     @Query("SELECT new com.blog.dto.ArticleShortDto(A.id, A.title, A.description, A.tags, A.imageUrl," +
+            " A.numViews, A.numShares, A.urlFriendly, A.type, A.createAt) from Article A " +
+            " JOIN Like l on l.articleId =  A.id AND l.createBy = :userId")
+    List<ArticleShortDto> getByLike(Pageable pageable, String userId);
+
+    @Query("SELECT new com.blog.dto.ArticleShortDto(A.id, A.title, A.description, A.tags, A.imageUrl," +
             " A.numViews, A.numShares, A.urlFriendly, A.type, A.createAt) from Article A WHERE A.tags like %:tag%")
     List<ArticleShortDto> getOrderByTags(String tag, Pageable pageable);
 

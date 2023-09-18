@@ -17,4 +17,5 @@ public class ArticleSearchDto implements Serializable {
     private Boolean isOrderAllByView;
     private Boolean isOrderAllByTime;
     private String tags;
+    private Boolean isLike;
 }

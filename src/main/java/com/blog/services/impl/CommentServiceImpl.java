@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
     }
     @Override
     public List<CommentDto> findByArticleId(String id) {
-        return MapperUtil.mapAll(commentRepository.findByArticleId(id), CommentDto.class);
+        return commentRepository.findByArticleId(id);
     };
 
     @Override
@@ -57,7 +57,8 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentDto createCommentDto(Comment comment) throws JsonProcessingException {
         CommentDto dto = MapperUtil.map(comment, CommentDto.class);
-        dto.setCreateBy(authenticationService.getCurrentUser().getName());
+        dto.setAuthorName(authenticationService.getCurrentUser().getName());
+        dto.setImgUrl(authenticationService.getCurrentUser().getImagePath());
         return dto;
     }
 
@@ -72,7 +73,7 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment createCommentEntityForInsert(CommentDto dto) throws JsonProcessingException, ArticleException {
         Comment comment = MapperUtil.map(dto, Comment.class);
-        comment.setCreateBy(authenticationService.getCurrentUser().getName());
+        comment.setCreateBy(authenticationService.getCurrentUser().getId());
 
         return comment;
     }

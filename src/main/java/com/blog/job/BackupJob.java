@@ -1,8 +1,10 @@
 package com.blog.job;
 
-import com.blog.repositories.ArticleRepository;
 import com.blog.services.ResourceService;
-import com.blog.util.*;
+import com.blog.util.GoogleDriver;
+import com.blog.util.ResourceConstants;
+import com.blog.util.FileUtil;
+import com.blog.util.UtilFunction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,32 +17,31 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipOutputStream;
-
 
 @Component
 @Slf4j
 public class BackupJob {
 
-    private ArticleRepository articleRepository;
     private ResourceService resourceService;
     private GoogleDriver googleDriver;
 
-    public BackupJob(ArticleRepository articleRepository, ResourceService resourceService, GoogleDriver googleDriver) {
-        this.articleRepository = articleRepository;
+    public BackupJob(ResourceService resourceService, GoogleDriver googleDriver) {
         this.resourceService = resourceService;
         this.googleDriver = googleDriver;
     }
 
     @Scheduled(cron = "0 0 1 * * ?")
     public void backup() throws IOException, InterruptedException {
+        log.info("Bắt đầu backup vào thời điểm: {}", UtilFunction.dateToString(new Date()));
         String backupFolder = resourceService.getResourcePath(ResourceConstants.BACK_UP);
         FileUtil.deleteAllFilesInFolder(backupFolder);
 
         backupDataForSpecificTables(backupFolder);
         backupImages(backupFolder);
         uploadSourceBackupToDriver(backupFolder);
+        log.info("Kết thúc backup vào thời điểm: {}", UtilFunction.dateToString(new Date()));
     }
 
     private void backupImages(String backupFolderPath) throws IOException {
@@ -106,9 +107,20 @@ public class BackupJob {
         }
 
         commandBuilder.append(" -r ").append(backupFolderPath).append(backupFileName);
-
         String command = commandBuilder.toString();
-        Process process = Runtime.getRuntime().exec(command);
-        process.waitFor();
+
+        try {
+            log.info("{} {}", UtilFunction.dateToString(new Date()), command);
+            Process process = Runtime.getRuntime().exec(command);
+            int exitValue = process.waitFor();
+            if (exitValue == 0) {
+                System.out.println("Sao lưu dữ liệu thành công.");
+                log.info("{} Sao lưu dữ liệu thành công.", UtilFunction.dateToString(new Date()));
+            } else {
+                log.info("{} Sao lưu dữ liệu thất bại. Mã lỗi: " + exitValue, UtilFunction.dateToString(new Date()));
+            }
+        } catch (IOException | InterruptedException e) {
+            log.info("{} {}", UtilFunction.dateToString(new Date()), e.getMessage());
+        }
     }
 }

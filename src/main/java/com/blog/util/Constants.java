@@ -14,4 +14,5 @@ public class Constants {
     public static String HYPHEN = "-";
 
     public static String PNG_EXTENSION = ".png";
+    public static String WEBP_EXTENSION = ".webp";
 }

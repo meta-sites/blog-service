@@ -1,27 +1,30 @@
 package com.blog.util;
 
+import com.luciad.imageio.webp.WebPWriteParam;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
+import java.io.File;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FileUtil {
 
-    public static void createDirectoryIfNoExist(String directoryPath) throws IOException {
+    public static void createDirectoryIfNoExist(String directoryPath) {
         File directory = new File(directoryPath);
 
         if (!directory.exists()) {
@@ -105,5 +108,34 @@ public class FileUtil {
         document.close();
 
         return coverName;
+    }
+
+    public static String exportFirstPdfPage(InputStream inputStream, String outputPath, float quality) throws IOException {
+        PDDocument document = PDDocument.load(inputStream);
+        PDFRenderer pdfRenderer = new PDFRenderer(document);
+        BufferedImage image = pdfRenderer.renderImageWithDPI(0, 300);
+        String coverName = UUID.randomUUID().toString() + Constants.WEBP_EXTENSION;
+        document.close();
+        return writeImage(image, outputPath, quality, coverName);
+    }
+
+    public static String uploadImage(InputStream inputStream, String outputPath, float quality, String imageName) throws IOException {
+        return writeImage(ImageIO.read(inputStream), outputPath, quality, imageName);
+    }
+
+    private static String writeImage(BufferedImage image, String outputPath, float quality, String imageName) throws IOException {
+        ImageWriter writer = ImageIO.getImageWritersByMIMEType("image/webp").next();
+        WebPWriteParam writeParam = new WebPWriteParam(writer.getLocale());
+        writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        writeParam.setCompressionType(writeParam.getCompressionTypes()[WebPWriteParam.LOSSY_COMPRESSION]);
+        writeParam.setCompressionQuality(quality);
+
+        String coverImagePath = outputPath + imageName;
+        FileImageOutputStream output = new FileImageOutputStream(new File(coverImagePath));
+        writer.setOutput(output);
+        writer.write(null, new IIOImage(image, null, null), writeParam);
+        output.close();
+
+        return imageName;
     }
 }

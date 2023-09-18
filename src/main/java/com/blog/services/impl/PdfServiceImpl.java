@@ -104,7 +104,7 @@ public class PdfServiceImpl implements PdfService {
     }
 
     private String savePdfCover(MultipartFile file) throws IOException {
-        return FileUtil.exportFirstPdfPage(file.getInputStream(), coverDir);
+        return FileUtil.exportFirstPdfPage(file.getInputStream(), coverDir, 1);
     }
 
     private PdfFile createPdfEntity(PdfFileDto dto, MultipartFile file) {

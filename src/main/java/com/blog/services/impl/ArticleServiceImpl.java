@@ -89,6 +89,7 @@ public class ArticleServiceImpl implements ArticleService  {
         if (isGetByType(dto)) return setCountComment(getByType(dto));
         if (isGetOrderByViews(dto)) return setCountComment(getOrderByViews(dto));
         if (isGetOrderAllByTime(dto)) return setCountComment(getOrderAllByTime(dto));
+        if (isGetByIsLike(dto)) return setCountComment(getByLike(dto));
         if (isGetByTags(dto)) return setCountComment(getAllTags(dto));
         throw new ArticleException(ExceptionConstants.SEARCH_CONDITION_IS_NOT_PROPER, HttpStatus.BAD_REQUEST);
     }
@@ -124,6 +125,10 @@ public class ArticleServiceImpl implements ArticleService  {
         return StringUtils.isNotBlank(dto.getTags())  && hasPaging(dto);
     }
 
+    private boolean isGetByIsLike(final ArticleSearchDto dto) {
+        return Boolean.TRUE.equals(dto.getIsLike())  && hasPaging(dto);
+    }
+
     private boolean hasPaging(final ArticleSearchDto dto) {
         return Objects.nonNull(dto.getNumsPerPage()) && Objects.nonNull(dto.getPageNumber());
     }
@@ -136,6 +141,18 @@ public class ArticleServiceImpl implements ArticleService  {
     private List<ArticleShortDto> getOrderAllByTime(final ArticleSearchDto dto) {
         Pageable pageable = PageRequest.of(dto.getPageNumber(), dto.getNumsPerPage());
         return articleRepository.getOrderByTime(pageable);
+    }
+
+    private List<ArticleShortDto> getByLike(final ArticleSearchDto dto) {
+        Pageable pageable = PageRequest.of(dto.getPageNumber(), dto.getNumsPerPage());
+        String userId = "";
+        try {
+            userId = authenticationService.getCurrentUser().getId();
+        } catch (JsonProcessingException e) {
+            log.error("{} {}", UtilFunction.dateToString(new Date()), e.getMessage());
+        }
+
+        return articleRepository.getByLike(pageable, userId);
     }
 
     private List<ArticleShortDto> getAllTags(final ArticleSearchDto dto) {
@@ -258,7 +275,7 @@ public class ArticleServiceImpl implements ArticleService  {
                         String.valueOf(result[2]), String.valueOf(result[3]), String.valueOf(result[4]),
                         Long.valueOf(String.valueOf(result[5])), Long.valueOf(String.valueOf(result[6])),
                         String.valueOf(result[7]), ArticleEnum.valueOf(String.valueOf(result[8])),
-                        UtilFunction.StringToDate(String.valueOf(result[9])));
+                        UtilFunction.stringToDate(String.valueOf(result[9])));
             } catch (ParseException e) {
                 return null;
             }
@@ -345,7 +362,7 @@ public class ArticleServiceImpl implements ArticleService  {
 
     private String buildImageUrl(Article article) throws IOException {
         return new StringBuilder(resourceService.getResourcePath(ResourceConstants.SERVER_DOMAIN_URL))
-                .append("public/api/article/article-image-cover/")
+                .append("/public/api/article/article-image-cover/")
                 .append(article.getImageUrl())
                 .toString();
     }

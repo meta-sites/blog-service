@@ -25,9 +25,14 @@ public class UtilFunction {
         return MapperUtil.mapStringToObject(userString, destinationType);
     }
 
-    public static Date StringToDate(String dateString) throws ParseException {
+    public static Date stringToDate(String dateString) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.parse(dateString);
+    }
+
+    public static String dateToString(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(date);
     }
 
     public static String findLongestCommonSubstring(String str1, String str2) {
