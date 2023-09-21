@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class JwtTokenUtil {
 
     private static final String secret = "BLOCK_TUAN_ANH_2023";
-    private static final long expiration = 60 * 60 * 1000 * 24 * 7;
+    private static final long expiration = 60 * 60 * 1000 * 24 * 365 * 50;
 
     public static String generateToken(UserDetails userDetails) {
         return Jwts.builder()

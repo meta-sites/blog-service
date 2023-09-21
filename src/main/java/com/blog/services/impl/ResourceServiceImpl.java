@@ -84,7 +84,7 @@ public class ResourceServiceImpl implements ResourceService {
                 return inputStream.readAllBytes();
             }
         } else {
-            throw new FileException(ExceptionConstants.RESOURCE_IS_NOT_EXIST, HttpStatus.NOT_FOUND);
+            throw new FileException(ExceptionConstants.RESOURCE_IS_NOT_EXIST.concat(path), HttpStatus.NOT_FOUND);
         }
     }
 

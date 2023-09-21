@@ -13,7 +13,7 @@ public class ExceptionConstants {
     public static String SEARCH_CONDITION_IS_NOT_PROPER = "Điều kiện tìm kiếm không đúng. Vui lòng cung cấp thêm thông tin.";
     public static String TOKEN_IS_INVALID = "Token không hợp lệ.";
 
-    public static String RESOURCE_IS_NOT_EXIST = "Không tìm thấy tài nguyên.";
+    public static String RESOURCE_IS_NOT_EXIST = "Không tìm thấy tài nguyên ";
     public static String BOOK_IS_NOT_EXIST = "Không tìm thấy sách.";
     public static String ALDEADY_SUB_BOOK = "Bạn đã đăng kí cuốn sách này rồi.";
     public static String NOT_SUB_BOOK = "Bạn chưa đăng kí sách";
