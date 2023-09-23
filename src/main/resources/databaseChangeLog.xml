@@ -67,4 +67,10 @@
             <column name="verified" type="boolean" defaultValue="false"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="blog" id="DEV-4">
+        <addColumn tableName="article">
+            <column name="num_like" type="int" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

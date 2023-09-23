@@ -16,9 +16,20 @@ import com.blog.models.Article;
 import com.blog.models.EmailPreference;
 import com.blog.models.User;
 import com.blog.repositories.ArticleRepository;
-import com.blog.repositories.UserRepository;
-import com.blog.services.*;
-import com.blog.util.*;
+import com.blog.services.ArticleService;
+import com.blog.services.AuthenticationService;
+import com.blog.services.CommentService;
+import com.blog.services.LikeService;
+import com.blog.services.ResourceService;
+import com.blog.services.MailService;
+import com.blog.services.EmailPreferenceService;
+import com.blog.util.ExceptionConstants;
+import com.blog.util.UtilFunction;
+import com.blog.util.MapperUtil;
+import com.blog.util.FileUtil;
+import com.blog.util.Constants;
+import com.blog.util.ResourceConstants;
+import com.blog.util.MailConstant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -100,10 +111,6 @@ public class ArticleServiceImpl implements ArticleService  {
     public Boolean share(String id) {
         return Boolean.TRUE;
     };
-
-    private boolean isGetOne(final ArticleSearchDto dto) {
-        return StringUtils.isNotBlank(dto.getUrlFriendly());
-    }
 
     private boolean isGetFullTextSearch(final ArticleSearchDto dto) {
         return StringUtils.isNotBlank(dto.getTextSearch()) && hasPaging(dto);
@@ -308,6 +315,7 @@ public class ArticleServiceImpl implements ArticleService  {
 
         entity.setNumViews(NumberUtils.LONG_ZERO);
         entity.setNumShares(NumberUtils.LONG_ZERO);
+        entity.setNumLike(NumberUtils.LONG_ZERO);
         entity.setUrlFriendly(UtilFunction.createUrlFriendlyFromTitle(entity.getTitle()));
         return entity;
     }

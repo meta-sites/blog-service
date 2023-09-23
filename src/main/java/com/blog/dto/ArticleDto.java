@@ -1,11 +1,7 @@
 package com.blog.dto;
 
 import com.blog.enums.ArticleEnum;
-import com.blog.models.Comment;
-import com.blog.models.User;
 import lombok.Data;
-
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,4 +21,5 @@ public class ArticleDto extends BaseDto implements Serializable {
     private ArticleEnum type;
     private List< CommentDto > comments;
     private Boolean isLikes;
+    private Long numLike;
 }

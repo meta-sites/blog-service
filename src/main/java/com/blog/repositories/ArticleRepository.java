@@ -5,10 +5,10 @@ import com.blog.enums.ArticleEnum;
 import com.blog.models.Article;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
-import java.util.Optional;
+
 
 public interface ArticleRepository extends JpaRepository< Article, String> {
 
@@ -41,4 +41,8 @@ public interface ArticleRepository extends JpaRepository< Article, String> {
 
     @Query(value = "SELECT A.type, count(*), SUM(A.num_views) FROM article A group by A.type", nativeQuery = true)
     List<Object[]> countArticleByType();
+
+    @Modifying
+    @Query("UPDATE Article a SET a.numLike = a.numLike + (case when :increase = true then 1 else -1 end) WHERE a.id = :articleId")
+    void updateLikeCount(String articleId, boolean increase );
 }
