@@ -68,7 +68,7 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
-        if (!isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
+        if (!fileName.equals("CV.pdf") && !isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
         return CompletableFuture.supplyAsync(() -> {
             try (RandomAccessFile file = new RandomAccessFile(eBookDir + fileName, "r")) {
                 byte[] buffer = new byte[CHUNK_SIZE];
