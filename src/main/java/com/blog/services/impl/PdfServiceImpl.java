@@ -68,7 +68,7 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
-        if (!fileName.equals("CV.pdf") && !isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
+        if (!isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
         return CompletableFuture.supplyAsync(() -> {
             try (RandomAccessFile file = new RandomAccessFile(eBookDir + fileName, "r")) {
                 byte[] buffer = new byte[CHUNK_SIZE];
@@ -84,6 +84,24 @@ public class PdfServiceImpl implements PdfService {
             }
         });
     }
+
+    @Override
+    public CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) {
+        return CompletableFuture.supplyAsync(() -> {
+            try (RandomAccessFile file = new RandomAccessFile(eBookDir + "CV.pdf", "r")) {
+                byte[] buffer = new byte[CHUNK_SIZE];
+                long offset = chunkIndex * CHUNK_SIZE;
+                file.seek(offset);
+                int bytesRead = file.read(buffer);
+                if (bytesRead == -1) {
+                    throw new IllegalArgumentException("Invalid chunk index");
+                }
+                return Arrays.copyOf(buffer, bytesRead);
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+        });
+    };
 
     @Override
     public Boolean uploadFile(MultipartFile file, PdfFileDto dto) throws IOException {

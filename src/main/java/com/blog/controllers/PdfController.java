@@ -42,6 +42,13 @@ public class PdfController {
                 .body(pdfService.downloadPdfByChunk(fileName, chunkIndex, fileId).get());
     }
 
+    @GetMapping(value = "/public/api/pdf-cv", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity< byte[] > downloadCVChunks(@RequestParam("chunk") Long chunkIndex) throws BookException, ExecutionException, InterruptedException, JsonProcessingException {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                .body(pdfService.downloadCVChunks(chunkIndex).get());
+    }
+
     @PostMapping("/private/api/pdf")
     public ResponseEntity< Boolean > uploadFiles(@RequestParam("file") MultipartFile file,
                                                  @RequestParam("metadata") String dto) throws IOException {

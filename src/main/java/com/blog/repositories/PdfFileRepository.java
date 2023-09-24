@@ -20,13 +20,15 @@ public interface PdfFileRepository extends JpaRepository< PdfFile, String> {
     @Query(value = "INSERT INTO book_subscriber (subscriber_id, file_id) VALUES (:userId, :pdfId)", nativeQuery = true)
     int subscribedPdfFile(@Param("userId") String userId, @Param("pdfId") String pdfId);
 
-    @Query(value = "SELECT file_id FROM book_subscriber WHERE subscriber_id = :id", nativeQuery = true)
+    @Query(value = "SELECT file_id FROM book_subscriber bs " +
+            " JOIN pdf_file pf ON bs.file_id = pf.id" +
+            " WHERE bs.subscriber_id = :id OR pf.file_type = 'CV'", nativeQuery = true)
     List<String> findScribeByUserId(String id);
 
-    @Query("SELECT pf FROM PdfFile pf ORDER BY pf.numSub DESC ")
+    @Query("SELECT pf FROM PdfFile pf WHERE pf.fileType = 'BOOK' ORDER BY pf.numSub DESC ")
     List<PdfFile> filterBySubscribe(Pageable pageable);
 
-    @Query("SELECT pf FROM PdfFile pf WHERE pf.description LIKE %:txtSearch% " +
+    @Query("SELECT pf FROM PdfFile pf WHERE pf.fileType = 'BOOK' AND pf.description LIKE %:txtSearch% " +
             "OR pf.author LIKE %:txtSearch% " +
             "OR pf.fileName LIKE %:txtSearch% " +
             "OR pf.name LIKE %:txtSearch% " +

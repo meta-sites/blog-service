@@ -15,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
 public interface PdfService {
     CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException;
 
+    CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) throws BookException, JsonProcessingException;
+
     Boolean uploadFile(MultipartFile file, PdfFileDto dto) throws IOException;
 
     List<PdfFileDto> filter(PdfSearchDto dto);

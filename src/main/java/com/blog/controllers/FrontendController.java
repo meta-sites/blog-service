@@ -45,6 +45,14 @@ public class FrontendController {
         return new ResponseEntity<>(resourceService.accessResource(filePath), headers, HttpStatus.OK);
     }
 
+    @GetMapping(value = {"/assets/pdf.worker.js"})
+    public ResponseEntity<byte[]> getPdfJS(HttpServletRequest request) throws IOException, FileException {
+        String filePath = staticSource + "/assets/pdf.worker.js";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/javascript"));
+        return new ResponseEntity<>(resourceService.accessResource(filePath), headers, HttpStatus.OK);
+    }
+
     @GetMapping(value = {"/*.css"})
     public ResponseEntity<byte[]> getCSS(HttpServletRequest request) throws IOException, FileException {
         String requestPath = request.getRequestURI();
