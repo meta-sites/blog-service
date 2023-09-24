@@ -20,6 +20,7 @@ public class ArticleShortDto extends BaseDto implements Serializable {
     private String imageUrl;
     private Long numViews;
     private Long numShares;
+    private Long numLike;
     private String urlFriendly;
     private Long numComments;
     private ArticleEnum type;
@@ -27,7 +28,7 @@ public class ArticleShortDto extends BaseDto implements Serializable {
     public ArticleShortDto(){}
 
     public ArticleShortDto(String id, String title, String description, String tags, String imageUrl,
-    Long numViews, Long numShares, String urlFriendly, ArticleEnum type, Date createAt) throws ParseException {
+    Long numViews, Long numShares, String urlFriendly, ArticleEnum type, Date createAt, Long numLike) throws ParseException {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,5 +39,6 @@ public class ArticleShortDto extends BaseDto implements Serializable {
         this.urlFriendly = urlFriendly;
         this.type = type;
         this.createAt = createAt;
+        this.numLike = numLike;
     }
 }

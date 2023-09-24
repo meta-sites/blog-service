@@ -282,7 +282,7 @@ public class ArticleServiceImpl implements ArticleService  {
                         String.valueOf(result[2]), String.valueOf(result[3]), String.valueOf(result[4]),
                         Long.valueOf(String.valueOf(result[5])), Long.valueOf(String.valueOf(result[6])),
                         String.valueOf(result[7]), ArticleEnum.valueOf(String.valueOf(result[8])),
-                        UtilFunction.stringToDate(String.valueOf(result[9])));
+                        UtilFunction.stringToDate(String.valueOf(result[9])), Long.valueOf(String.valueOf(result[10])));
             } catch (ParseException e) {
                 return null;
             }
