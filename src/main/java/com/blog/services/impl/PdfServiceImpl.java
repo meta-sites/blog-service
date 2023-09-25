@@ -54,6 +54,8 @@ public class PdfServiceImpl implements PdfService {
     private AuthenticationService authenticationService;
     private CacheService cacheService;
     private ResourceService resourceService;
+    private static final int CHUNK_SIZE = 3 * 1024 * 1024;
+    private WeakHashMap<String, RandomAccessFile> fileCache = new WeakHashMap<>();
 
     public PdfServiceImpl(PdfFileRepository pdfFileRepository, AuthenticationService authenticationService,
                           UserRepository userRepository, CacheService cacheService, ResourceService resourceService) {
@@ -64,13 +66,22 @@ public class PdfServiceImpl implements PdfService {
         this.resourceService = resourceService;
     }
 
-    private static final int CHUNK_SIZE = 3 * 1024 * 1024;
+    private RandomAccessFile getOrCreateRandomAccessFile(String fileName) {
+        return fileCache.computeIfAbsent(fileName, key -> {
+            try {
+                return new RandomAccessFile(eBookDir + key, "r");
+            } catch (IOException e) {
+                throw new CompletionException(e);
+            }
+        });
+    }
 
-    @Override
-    public CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
+    private CompletableFuture<byte[]> downloadFileByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
         if (!isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
+
         return CompletableFuture.supplyAsync(() -> {
-            try (RandomAccessFile file = new RandomAccessFile(eBookDir + fileName, "r")) {
+            try {
+                RandomAccessFile file = getOrCreateRandomAccessFile(fileName);
                 byte[] buffer = new byte[CHUNK_SIZE];
                 long offset = chunkIndex * CHUNK_SIZE;
                 file.seek(offset);
@@ -86,22 +97,14 @@ public class PdfServiceImpl implements PdfService {
     }
 
     @Override
-    public CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) {
-        return CompletableFuture.supplyAsync(() -> {
-            try (RandomAccessFile file = new RandomAccessFile(eBookDir + "CV.pdf", "r")) {
-                byte[] buffer = new byte[CHUNK_SIZE];
-                long offset = chunkIndex * CHUNK_SIZE;
-                file.seek(offset);
-                int bytesRead = file.read(buffer);
-                if (bytesRead == -1) {
-                    throw new IllegalArgumentException("Invalid chunk index");
-                }
-                return Arrays.copyOf(buffer, bytesRead);
-            } catch (IOException e) {
-                throw new CompletionException(e);
-            }
-        });
-    };
+    public CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
+        return downloadFileByChunk(fileName, chunkIndex, fileId);
+    }
+
+    @Override
+    public CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) throws JsonProcessingException, BookException {
+        return downloadFileByChunk("CV.pdf", chunkIndex, null);
+    }
 
     @Override
     public Boolean uploadFile(MultipartFile file, PdfFileDto dto) throws IOException {
