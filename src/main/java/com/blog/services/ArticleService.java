@@ -31,5 +31,5 @@ public interface ArticleService {
 
     Boolean deleteArticleImage(String fileName) throws IOException;
 
-    byte[] getArticleImageCover(String id) throws IOException, FileException, BookException;
+    byte[] getArticleImageCover(String id, Integer width) throws IOException, FileException, BookException;
 }

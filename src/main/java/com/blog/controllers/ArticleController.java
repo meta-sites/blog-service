@@ -86,9 +86,9 @@ public class ArticleController {
     }
 
     @GetMapping("/public/api/article/article-image-cover/{id}")
-    public ResponseEntity< byte[] > getArticleImageCover(@PathVariable String id) throws IOException, FileException, BookException {
+    public ResponseEntity< byte[] > getArticleImageCover(@PathVariable String id, @RequestParam(required = false) Integer width) throws IOException, FileException, BookException {
         return ResponseEntity
                 .ok()
-                .body(articleService.getArticleImageCover(id));
+                .body(articleService.getArticleImageCover(id, width));
     }
 }

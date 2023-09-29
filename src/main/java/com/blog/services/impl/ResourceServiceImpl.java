@@ -1,23 +1,25 @@
 package com.blog.services.impl;
 
-import com.blog.exception.BookException;
 import com.blog.exception.FileException;
 import com.blog.services.ResourceService;
 import com.blog.util.ExceptionConstants;
 import com.blog.util.FileUtil;
-import com.blog.util.PathUtil;
 import com.blog.util.ResourceConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -87,6 +89,27 @@ public class ResourceServiceImpl implements ResourceService {
             throw new FileException(ExceptionConstants.RESOURCE_IS_NOT_EXIST.concat(path), HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public byte[] accessImage(String path, Integer newWidth) throws IOException, FileException {
+        byte[] imageBytes = accessResource(path);
+        if (Objects.isNull(newWidth)) return imageBytes;
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
+        BufferedImage originalImage = ImageIO.read(inputStream);
+        int originalWidth = originalImage.getWidth();
+        int originalHeight = originalImage.getHeight();
+        int newHeight = (int) ((double) newWidth / originalWidth * originalHeight);
+
+        Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+        resizedImage.getGraphics().drawImage(scaledImage, 0, 0, null);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, "png", outputStream);
+        return outputStream.toByteArray();
+    };
 
     @Override
     public void removeResource(String path) throws IOException {

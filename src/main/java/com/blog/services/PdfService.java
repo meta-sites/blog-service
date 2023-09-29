@@ -5,7 +5,6 @@ import com.blog.dto.PdfSearchDto;
 import com.blog.exception.BookException;
 import com.blog.exception.FileException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,5 +24,5 @@ public interface PdfService {
 
     List<String> findScribeByUserId(String id);
 
-    byte[] accessResource(String coverFileName) throws IOException, FileException;
+    byte[] accessResource(String coverFileName, Integer width) throws IOException, FileException;
 }

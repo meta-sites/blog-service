@@ -76,9 +76,7 @@ public class PdfServiceImpl implements PdfService {
         });
     }
 
-    private CompletableFuture<byte[]> downloadFileByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
-        if (!isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
-
+    private CompletableFuture<byte[]> downloadFileByChunk(String fileName, Long chunkIndex) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 RandomAccessFile file = getOrCreateRandomAccessFile(fileName);
@@ -98,12 +96,13 @@ public class PdfServiceImpl implements PdfService {
 
     @Override
     public CompletableFuture<byte[]> downloadPdfByChunk(String fileName, Long chunkIndex, String fileId) throws BookException, JsonProcessingException {
-        return downloadFileByChunk(fileName, chunkIndex, fileId);
+        if (!isSubscribe(fileId)) throw new BookException(ExceptionConstants.NOT_SUB_BOOK, HttpStatus.UNAUTHORIZED);
+        return downloadFileByChunk(fileName, chunkIndex);
     }
 
     @Override
-    public CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) throws JsonProcessingException, BookException {
-        return downloadFileByChunk("CV.pdf", chunkIndex, null);
+    public CompletableFuture<byte[]> downloadCVChunks(Long chunkIndex) {
+        return downloadFileByChunk("CV.pdf", chunkIndex);
     }
 
     @Override
@@ -180,8 +179,8 @@ public class PdfServiceImpl implements PdfService {
     };
 
     @Override
-    public byte[] accessResource(String coverFileName) throws IOException, FileException {
-        return resourceService.accessResource(coverDir + coverFileName);
+    public byte[] accessResource(String coverFileName, Integer width) throws IOException, FileException {
+        return resourceService.accessImage(coverDir + coverFileName, width);
     }
 
     private boolean isFilterByType(PdfSearchDto dto) {

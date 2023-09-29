@@ -208,8 +208,8 @@ public class ArticleServiceImpl implements ArticleService  {
     }
 
     @Override
-    public byte[] getArticleImageCover(String id) throws IOException, FileException, BookException {
-        return resourceService.accessResource(articleCoverDir + id);
+    public byte[] getArticleImageCover(String id, Integer width) throws IOException, FileException, BookException {
+        return resourceService.accessImage(articleCoverDir + id, width);
     };
 
     private void buildArticleViewAndCountDto(SummaryArticleDto dto, List<Object[]> articleCount) {
