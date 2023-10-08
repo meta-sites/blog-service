@@ -32,58 +32,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private List<String> noExcludedPaths = Arrays.asList("^/private/.*");
 
-    @Override
-//    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-//        final String authorizationHeader = request.getHeader("Authorization");
-//        final String requestPath = request.getRequestURI();
-//        String username = null;
-//        String jwtToken = null;
-//        Boolean isPrivateAPI = noExcludedPaths.stream().anyMatch(requestPath::matches);
-//        Boolean invalidToken = Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith("Bearer ");
-//
-//        if (!isPrivateAPI) {
-//            if (invalidToken) {
-//                try {
-//                    jwtToken = authorizationHeader.substring(7);
-//                    username = JwtTokenUtil.extractUsername(jwtToken);
-//                    List< SimpleGrantedAuthority > authorities = JwtTokenUtil.extractAuthorities(jwtToken).stream()
-//                            .map(SimpleGrantedAuthority::new)
-//                            .collect(Collectors.toList());
-//                    validateTokenValid(jwtToken, username, response);
-//
-//                    Boolean isExistInContext = Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication());
-//                    if (isExistInContext) {
-//                        Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
-//                        SecurityContextHolder.getContext().setAuthentication(authentication);
-//                    }
-//                } catch (Exception ex) {}
-//
-//            }
-//            filterChain.doFilter(request, response);
-//        } else
-//        {
-//            if (invalidToken) {
-//                jwtToken = authorizationHeader.substring(7);
-//                username = JwtTokenUtil.extractUsername(jwtToken);
-//                List< SimpleGrantedAuthority > authorities = JwtTokenUtil.extractAuthorities(jwtToken).stream()
-//                    .map(SimpleGrantedAuthority::new)
-//                    .collect(Collectors.toList());
-//                validateTokenValid(jwtToken, username, response);
-//
-//                Boolean isExistInContext = Objects.nonNull(username) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication());
-//                if (isExistInContext) {
-//                    Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
-//                    SecurityContextHolder.getContext().setAuthentication(authentication);
-//                }
-//                filterChain.doFilter(request, response);
-//            } else {
-//                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization token not found");
-//                return;
-//            }
-//
-//        }
-//   }
-
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         final String authorizationHeader = request.getHeader("Authorization");
         final String requestPath = request.getRequestURI();

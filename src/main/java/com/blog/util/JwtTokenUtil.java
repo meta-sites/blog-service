@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collections;
@@ -18,14 +17,12 @@ import java.util.stream.Collectors;
 public class JwtTokenUtil {
 
     private static final String secret = "BLOCK_TUAN_ANH_2023";
-    private static final long expiration = 60 * 60 * 1000 * 24 * 365 * 50;
 
     public static String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .claim("authorities", userDetails.getAuthorities().stream().map(Object::toString).collect(Collectors.toList()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
@@ -63,7 +60,6 @@ public class JwtTokenUtil {
 
     public static Boolean validateToken(String token, String userNameDB) {
         final String username = extractUsername(token);
-        return (username.equals(userNameDB) && !isTokenExpired(token));
+        return username.equals(userNameDB);
     }
-
 }
