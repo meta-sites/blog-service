@@ -73,7 +73,7 @@ public class PdfController {
     }
 
     @GetMapping("/public/api/pdf/cover/{coverFileName}")
-    public ResponseEntity< byte[] > getPdfResource(@PathVariable String coverFileName, @RequestParam(required = false) Integer width) throws IOException, BookException, FileException {
+    public ResponseEntity< byte[] > getPdfResource(@PathVariable String coverFileName, @RequestParam(required = false) Integer width) throws IOException, FileException {
         byte[] resource = pdfService.accessResource(coverFileName, width);
         return ResponseEntity
                 .ok()

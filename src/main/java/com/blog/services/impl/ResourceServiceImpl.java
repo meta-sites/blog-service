@@ -11,14 +11,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import javax.imageio.ImageIO;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 @Service
@@ -93,23 +88,11 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public byte[] accessImage(String path, Integer newWidth) throws IOException, FileException {
         byte[] imageBytes = accessResource(path);
-        if (Objects.isNull(newWidth)) return imageBytes;
+        if (Objects.isNull(newWidth) || path.contains(".webp")) return imageBytes;
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes);
-        BufferedImage originalImage = ImageIO.read(inputStream);
-        int originalWidth = originalImage.getWidth();
-        int originalHeight = originalImage.getHeight();
-        int newHeight = (int) ((double) newWidth / originalWidth * originalHeight);
+        return FileUtil.resizeImage(imageBytes, newWidth);
+    }
 
-        Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-
-        resizedImage.getGraphics().drawImage(scaledImage, 0, 0, null);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(resizedImage, "png", outputStream);
-        return outputStream.toByteArray();
-    };
 
     @Override
     public void removeResource(String path) throws IOException {

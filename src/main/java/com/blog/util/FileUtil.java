@@ -11,12 +11,16 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -137,5 +141,26 @@ public class FileUtil {
         output.close();
 
         return imageName;
+    }
+
+    public static byte[] resizeImage(byte[] imageBytes, Integer newWidth) throws IOException {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+            BufferedImage originalImage = ImageIO.read(inputStream);
+            int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
+            int newHeight = (int) ((double) newWidth / originalWidth * originalHeight);
+
+            Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+            BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+            Graphics2D graphics2D = resizedImage.createGraphics();
+            graphics2D.drawImage(scaledImage, 0, 0, null);
+            graphics2D.dispose();
+
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                ImageIO.write(resizedImage, "png", outputStream);
+                return outputStream.toByteArray();
+            }
+        }
     }
 }
