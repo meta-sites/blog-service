@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public User getCurrentUserForSave() throws JsonProcessingException {
+    public User getCurrentUserForSave() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getPrincipal().toString();
         Optional< User > user = userRepository.findByUserName(userName);

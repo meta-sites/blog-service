@@ -1,10 +1,13 @@
 package com.blog.services.impl;
 
-import com.blog.dto.PdfFileDto;
 import com.blog.dto.UserDto;
 import com.blog.enums.RoleEnum;
 import com.blog.enums.UserTypeEnum;
-import com.blog.exception.*;
+import com.blog.exception.UserException;
+import com.blog.exception.TokenException;
+import com.blog.exception.PasswordDecodeException;
+import com.blog.exception.UnAuthorizeException;
+import com.blog.exception.DataBaseException;
 import com.blog.models.Token;
 import com.blog.models.User;
 import com.blog.repositories.TokenRepository;
@@ -12,6 +15,8 @@ import com.blog.repositories.UserRepository;
 import com.blog.services.CacheService;
 import com.blog.services.PdfService;
 import com.blog.services.UserService;
+import com.blog.services.AuthenticationService;
+import com.blog.services.ResourceService;
 import com.blog.util.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.util.Pair;
@@ -27,11 +32,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Objects;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -44,11 +52,14 @@ public class UserServiceImpl implements UserService {
     private CacheService cacheService;
     private PdfService pdfService;
     private PathUtil pathUtil;
+    private AuthenticationService authenticationService;
+    private ResourceService resourceService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, UserDetailsService userDetailsService,
                            AuthenticationManager authenticationManager, TokenRepository tokenRepository,
-                           CacheService cacheService, PdfService pdfService, PathUtil pathUtil) {
+                           CacheService cacheService, PdfService pdfService, PathUtil pathUtil,
+                           AuthenticationService authenticationService, ResourceService resourceService) {
         this.userRepository = userRepository;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
@@ -56,6 +67,8 @@ public class UserServiceImpl implements UserService {
         this.cacheService = cacheService;
         this.pdfService = pdfService;
         this.pathUtil = pathUtil;
+        this.authenticationService = authenticationService;
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -125,6 +138,35 @@ public class UserServiceImpl implements UserService {
         setBooksSubscribe(userDto, user.getId());
         return userDto;
     }
+
+    @Override
+    @Transactional
+    public UserDto updateUserLogo(MultipartFile file) throws IOException {
+        String logoDir = resourceService.getResourcePath(ResourceConstants.USER_DIR_LOGO);
+        FileUtil.createDirectoryIfNoExist(logoDir);
+        String logoImageName = UUID.randomUUID().toString() + Constants.PNG_EXTENSION;
+        String filePath = logoDir + logoImageName;
+        file.transferTo(Paths.get(filePath));
+        User user = authenticationService.getCurrentUserForSave();
+        user.setImagePath("/user/logo/" + logoImageName);
+        User userUpdated = userRepository.save(user);
+
+        return MapperUtil.map(userUpdated, UserDto.class);
+    };
+
+    @Override
+    @Transactional
+    public UserDto updatePathUser(UserDto userDto) throws PasswordDecodeException {
+        User user = authenticationService.getCurrentUserForSave();
+        if (Objects.nonNull(userDto.getName())) user.setName(userDto.getName());
+        if (Objects.nonNull(userDto.getEmail())) user.setEmail(userDto.getEmail());
+        if (Objects.nonNull(userDto.getPassword())) {
+            boolean isValidatePassword = PasswordUtil.isValidatePassword(userDto.getPassword());
+            if (!isValidatePassword) throw new PasswordDecodeException(ExceptionConstants.PASS_WORD_INVALID);
+            user.setPassword(PasswordUtil.encodePassword(userDto.getPassword()));
+        }
+        return MapperUtil.map( userRepository.save(user), UserDto.class );
+    };
 
     private String createCacheKey(String username) {
         return new StringBuilder(CacheConstants.TOKEN_CACHE).append(username).toString();

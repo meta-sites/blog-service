@@ -87,10 +87,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     public byte[] accessImage(String path, Integer newWidth) throws IOException, FileException {
-        byte[] imageBytes = accessResource(path);
-        if (Objects.isNull(newWidth) || path.contains(".webp")) return imageBytes;
-
-        return FileUtil.resizeImage(imageBytes, newWidth);
+        return accessResource(path);
     }
 
 

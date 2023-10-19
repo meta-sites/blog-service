@@ -2,6 +2,7 @@ package com.blog.controllers;
 
 import com.blog.exception.FileException;
 import com.blog.services.ResourceService;
+import com.blog.util.ResourceConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -9,8 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ContentDisposition;
-
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -87,6 +88,14 @@ public class FrontendController {
 
         return ResponseEntity.ok()
                 .contentType(contentType)
+                .body(resourceService.accessResource(filePath));
+    }
+
+    @GetMapping(value = {"/user/logo/{logoImageName}"})
+    public ResponseEntity<byte[]> getImage(@PathVariable String logoImageName) throws IOException, FileException {
+        String filePath = resourceService.getResourcePath(ResourceConstants.USER_DIR_LOGO) + logoImageName;
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
                 .body(resourceService.accessResource(filePath));
     }
 

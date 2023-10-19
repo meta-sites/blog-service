@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface AuthenticationService {
     User getCurrentUser() throws JsonProcessingException;
 
-    User getCurrentUserForSave() throws JsonProcessingException;
+    User getCurrentUserForSave();
 
     boolean isLogin();
 }
