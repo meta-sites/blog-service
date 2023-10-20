@@ -27,7 +27,7 @@ public class FrontendController {
     @Value("${blog.static.source}")
     private String staticSource;
 
-    @GetMapping(value = {"/", "/blog/**", "/blogger/**", "/tai-lieu/**", "admin/**"})
+    @GetMapping(value = {"/", "/profile", "/blog/**", "/blogger/**", "/tai-lieu/**", "admin/**"})
     public String blog() throws IOException, FileException {
         String filePath = staticSource + "/index.html";
         return new String(resourceService.accessResource(filePath), StandardCharsets.UTF_8);
