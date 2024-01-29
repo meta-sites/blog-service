@@ -1,5 +1,7 @@
 package com.blog.configuration;
 
+import io.jsonwebtoken.lang.Collections;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -7,4 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableJpaRepositories("com.blog.repositories")
 @EnableTransactionManagement
-public class DatabaseConfiguration {}
+public class DatabaseConfiguration {
+//    Collections.arrayToList()
+}

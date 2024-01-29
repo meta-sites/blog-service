@@ -2,7 +2,6 @@ package com.blog.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +20,4 @@ public class MapperUtil {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(jsonString, destinationType);
     }
-
-
 }

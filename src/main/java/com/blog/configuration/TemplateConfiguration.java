@@ -11,4 +11,12 @@ public class TemplateConfiguration {
     {
         return new RestTemplate();
     }
+
+    public static void main(String args[]) {
+        System.out.println("abc");
+    }
+
+    public static void main(char[] args) {
+        System.out.println("abc");
+    }
 }
